@@ -1,0 +1,1783 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>360videosessie — De ervaring die je gasten nooit vergeten</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700;9..144,900&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --bg-soft: #121212;
+    --bg-card: #181818;
+    --pink: #e91e63;
+    --pink-bright: #ff2d7a;
+    --orange: #f59e0b;
+    --orange-bright: #ffaf2e;
+    --gradient: linear-gradient(135deg, #e91e63 0%, #f59e0b 100%);
+    --gradient-soft: linear-gradient(135deg, rgba(233, 30, 99, 0.15) 0%, rgba(245, 158, 11, 0.15) 100%);
+    --gradient-glow: linear-gradient(135deg, rgba(233, 30, 99, 0.4) 0%, rgba(245, 158, 11, 0.4) 100%);
+    --white: #f5f5f5;
+    --gray: #8a8a8a;
+    --gray-light: #b8b8b8;
+    --border: rgba(245, 158, 11, 0.15);
+    --border-bright: rgba(245, 158, 11, 0.4);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+    line-height: 1.6;
+    cursor: default;
+  }
+
+  /* ============ ANIMATED GRADIENT ORBS BACKGROUND ============ */
+  .orbs {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.4;
+    animation: drift 25s ease-in-out infinite;
+  }
+
+  .orb-1 {
+    width: 500px; height: 500px;
+    background: var(--pink);
+    top: -10%;
+    left: -10%;
+    animation-delay: 0s;
+  }
+
+  .orb-2 {
+    width: 400px; height: 400px;
+    background: var(--orange);
+    top: 50%;
+    right: -10%;
+    animation-delay: -8s;
+    animation-duration: 30s;
+  }
+
+  .orb-3 {
+    width: 300px; height: 300px;
+    background: var(--pink-bright);
+    bottom: -10%;
+    left: 30%;
+    animation-delay: -15s;
+    animation-duration: 35s;
+  }
+
+  @keyframes drift {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    25% { transform: translate(100px, -50px) scale(1.1); }
+    50% { transform: translate(-50px, 100px) scale(0.9); }
+    75% { transform: translate(80px, 60px) scale(1.05); }
+  }
+
+  /* Noise overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
+    opacity: 0.05;
+    pointer-events: none;
+    z-index: 1000;
+    mix-blend-mode: overlay;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* ============ NAV ============ */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 16px 24px;
+    background: rgba(10, 10, 10, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: padding 0.3s;
+  }
+
+  nav.scrolled {
+    padding: 10px 24px;
+  }
+
+  .nav-logo {
+    height: 38px;
+    width: auto;
+  }
+
+  .nav-cta {
+    padding: 10px 20px;
+    background: var(--gradient);
+    color: var(--white);
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .nav-cta::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #ff2d7a 0%, #ffaf2e 100%);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .nav-cta:hover::before { opacity: 1; }
+  .nav-cta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(233, 30, 99, 0.4);
+  }
+
+  .nav-cta span {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Personalized greeting bar */
+  .personal-bar {
+    position: fixed;
+    top: 72px;
+    left: 0; right: 0;
+    background: var(--gradient);
+    color: var(--white);
+    padding: 10px 0;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    display: none;
+    z-index: 99;
+    animation: slideDown 0.6s ease-out;
+  }
+
+  .personal-bar.active { display: block; }
+
+  @keyframes slideDown {
+    from { transform: translateY(-100%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  /* ============ HERO ============ */
+  .hero {
+    min-height: 100vh;
+    position: relative;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    padding: 140px 0 80px;
+  }
+
+  /* MEDIA PLACEHOLDER 1 — HERO BACKGROUND */
+  .hero-media {
+    position: absolute;
+    top: 0; right: 0;
+    width: 50%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 1;
+    opacity: 0.6;
+    -webkit-mask-image: linear-gradient(to left, black 30%, transparent 100%);
+    mask-image: linear-gradient(to left, black 30%, transparent 100%);
+  }
+
+  /* Plaats hier je media. Verwijder .media-placeholder en plaats:
+     <video autoplay muted loop playsinline src="hero.mp4"></video>
+     of <img src="hero.jpg"> */
+  .media-placeholder {
+    width: 100%;
+    height: 100%;
+    background:
+      radial-gradient(circle at 30% 40%, rgba(233, 30, 99, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 70% 60%, rgba(245, 158, 11, 0.1) 0%, transparent 50%),
+      var(--bg-card);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 40px;
+    text-align: center;
+    border: 1px dashed var(--border-bright);
+    position: relative;
+  }
+
+  .media-placeholder::before {
+    content: '◉';
+    font-size: 48px;
+    margin-bottom: 16px;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    opacity: 0.6;
+  }
+
+  .media-placeholder .label {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 12px;
+    font-weight: 700;
+  }
+
+  .media-placeholder .instruction {
+    font-family: 'Fraunces', serif;
+    font-size: 15px;
+    color: var(--gray-light);
+    line-height: 1.5;
+    font-style: italic;
+    max-width: 320px;
+  }
+
+  /* Spinning 360 ring decoration */
+  .spin-ring {
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    right: -200px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    z-index: 0;
+    animation: spin 60s linear infinite;
+  }
+
+  .spin-ring::before,
+  .spin-ring::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+  }
+
+  .spin-ring::before {
+    inset: 60px;
+    border: 1px dashed var(--border-bright);
+  }
+
+  .spin-ring::after {
+    inset: 120px;
+    border: 1px solid var(--border);
+  }
+
+  .spin-ring .ring-dot {
+    position: absolute;
+    top: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 10px;
+    height: 10px;
+    background: var(--gradient);
+    border-radius: 50%;
+    box-shadow: 0 0 20px var(--pink);
+  }
+
+  @keyframes spin {
+    from { transform: translateY(-50%) rotate(0deg); }
+    to { transform: translateY(-50%) rotate(360deg); }
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 3;
+    max-width: 700px;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 16px;
+    background: var(--gradient-soft);
+    border: 1px solid var(--border-bright);
+    border-radius: 100px;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--orange-bright);
+    margin-bottom: 32px;
+    font-weight: 700;
+    animation: fadeUp 0.8s ease-out;
+  }
+
+  .badge::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: var(--gradient);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 0 0 rgba(233, 30, 99, 0.7); }
+    50% { opacity: 0.7; transform: scale(1.3); box-shadow: 0 0 0 8px rgba(233, 30, 99, 0); }
+  }
+
+  h1.hero-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: clamp(48px, 8vw, 104px);
+    line-height: 0.92;
+    letter-spacing: -0.04em;
+    margin-bottom: 32px;
+  }
+
+  h1.hero-title span {
+    display: block;
+    opacity: 0;
+    animation: fadeUp 0.8s ease-out forwards;
+  }
+
+  h1.hero-title span:nth-child(1) { animation-delay: 0.1s; }
+  h1.hero-title span:nth-child(2) { animation-delay: 0.25s; }
+  h1.hero-title span:nth-child(3) { animation-delay: 0.4s; }
+  h1.hero-title span:nth-child(4) { animation-delay: 0.55s; }
+
+  h1.hero-title em {
+    font-style: italic;
+    font-weight: 400;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    position: relative;
+  }
+
+  .hero-subtitle {
+    font-size: 19px;
+    color: var(--gray-light);
+    margin-bottom: 48px;
+    max-width: 540px;
+    animation: fadeUp 0.8s ease-out 0.7s backwards;
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    animation: fadeUp 0.8s ease-out 0.85s backwards;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 18px 32px;
+    border-radius: 100px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    border: none;
+    text-transform: uppercase;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-primary {
+    background: var(--gradient);
+    color: var(--white);
+  }
+
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--pink-bright) 0%, var(--orange-bright) 100%);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .btn-primary:hover::before { opacity: 1; }
+
+  .btn-primary > * { position: relative; z-index: 1; }
+
+  .btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 20px 40px rgba(233, 30, 99, 0.4);
+  }
+
+  .btn-secondary {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--white);
+    border: 1px solid var(--border-bright);
+    backdrop-filter: blur(10px);
+  }
+
+  .btn-secondary:hover {
+    background: var(--gradient-soft);
+    border-color: var(--orange);
+  }
+
+  .btn-arrow {
+    transition: transform 0.3s;
+    display: inline-block;
+  }
+
+  .btn:hover .btn-arrow { transform: translateX(6px); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ============ TICKER ============ */
+  .ticker-section {
+    padding: 24px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+    background: var(--bg-soft);
+    position: relative;
+    z-index: 2;
+  }
+
+  .ticker {
+    display: flex;
+    gap: 60px;
+    white-space: nowrap;
+    animation: scroll 30s linear infinite;
+  }
+
+  .ticker-item {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 24px;
+    color: var(--gray);
+    display: inline-flex;
+    align-items: center;
+    gap: 60px;
+  }
+
+  .ticker-item::after {
+    content: '✦';
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 20px;
+  }
+
+  @keyframes scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* ============ SECTIONS ============ */
+  section {
+    padding: 140px 0;
+    position: relative;
+    z-index: 2;
+  }
+
+  .section-label {
+    display: inline-block;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--orange-bright);
+    margin-bottom: 24px;
+    font-weight: 700;
+    padding: 6px 14px;
+    background: var(--gradient-soft);
+    border: 1px solid var(--border-bright);
+    border-radius: 100px;
+  }
+
+  .section-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: clamp(36px, 5.5vw, 72px);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin-bottom: 24px;
+  }
+
+  .section-title em {
+    font-style: italic;
+    font-weight: 400;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .section-intro {
+    font-size: 18px;
+    color: var(--gray-light);
+    max-width: 640px;
+    margin-bottom: 80px;
+  }
+
+  /* ============ HOW IT WORKS ============ */
+  .how-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 24px;
+  }
+
+  .how-card {
+    padding: 40px 32px;
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .how-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--gradient-soft);
+    opacity: 0;
+    transition: opacity 0.5s;
+  }
+
+  .how-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--gradient);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.5s ease-out;
+  }
+
+  .how-card:hover {
+    transform: translateY(-8px);
+    border-color: var(--border-bright);
+  }
+
+  .how-card:hover::before { opacity: 1; }
+  .how-card:hover::after { transform: scaleX(1); }
+
+  .how-card > * { position: relative; z-index: 1; }
+
+  .how-number {
+    font-family: 'Fraunces', serif;
+    font-size: 64px;
+    font-weight: 300;
+    font-style: italic;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1;
+    margin-bottom: 24px;
+  }
+
+  .how-title {
+    font-family: 'Fraunces', serif;
+    font-size: 26px;
+    margin-bottom: 12px;
+    font-weight: 500;
+  }
+
+  .how-desc {
+    color: var(--gray-light);
+    font-size: 15px;
+  }
+
+  /* ============ STATS ============ */
+  .stats-section {
+    padding: 80px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 48px;
+    text-align: center;
+  }
+
+  .stat-number {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(48px, 6vw, 72px);
+    font-weight: 300;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1;
+    margin-bottom: 12px;
+  }
+
+  .stat-label {
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gray-light);
+    font-weight: 600;
+  }
+
+  /* ============ SHOWCASE GRID ============ */
+  .showcase-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-auto-rows: 220px;
+    gap: 16px;
+  }
+
+  .showcase-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .showcase-item::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--gradient);
+    opacity: 0;
+    transition: opacity 0.5s;
+    pointer-events: none;
+    mix-blend-mode: overlay;
+  }
+
+  .showcase-item:hover {
+    transform: scale(1.02);
+    border-color: var(--border-bright);
+    box-shadow: 0 20px 60px rgba(233, 30, 99, 0.2);
+  }
+
+  .showcase-item:hover::after { opacity: 0.15; }
+
+  .showcase-item.large { grid-column: span 8; grid-row: span 2; }
+  .showcase-item.medium { grid-column: span 4; grid-row: span 1; }
+  .showcase-item.tall { grid-column: span 4; grid-row: span 2; }
+  .showcase-item.wide { grid-column: span 8; grid-row: span 1; }
+
+  @media (max-width: 768px) {
+    .showcase-item.large,
+    .showcase-item.medium,
+    .showcase-item.tall,
+    .showcase-item.wide {
+      grid-column: span 12;
+      grid-row: span 1;
+    }
+  }
+
+  /* ============ PRICING ============ */
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    margin-top: 64px;
+  }
+
+  .price-card {
+    padding: 48px 36px;
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    position: relative;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+  }
+
+  .price-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--gradient-soft);
+    opacity: 0;
+    transition: opacity 0.5s;
+    z-index: 0;
+  }
+
+  .price-card:hover::before { opacity: 0.5; }
+  .price-card > * { position: relative; z-index: 1; }
+
+  .price-card.featured {
+    border: 1px solid transparent;
+    background:
+      linear-gradient(var(--bg-soft), var(--bg-soft)) padding-box,
+      var(--gradient) border-box;
+    transform: scale(1.03);
+  }
+
+  .price-card.featured::before { opacity: 0.3; }
+
+  .price-card.featured .featured-badge {
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--gradient);
+    color: var(--white);
+    padding: 6px 16px;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    border-radius: 100px;
+    z-index: 2;
+    box-shadow: 0 4px 20px rgba(233, 30, 99, 0.4);
+  }
+
+  .price-card:hover {
+    transform: translateY(-8px);
+  }
+
+  .price-card.featured:hover {
+    transform: scale(1.03) translateY(-8px);
+  }
+
+  .price-duration {
+    font-family: 'Fraunces', serif;
+    font-size: 14px;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    font-weight: 600;
+  }
+
+  .price-amount {
+    font-family: 'Fraunces', serif;
+    font-size: 64px;
+    font-weight: 300;
+    line-height: 1;
+    margin-bottom: 32px;
+  }
+
+  .price-amount .currency {
+    font-size: 28px;
+    vertical-align: super;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-right: 4px;
+  }
+
+  .price-features {
+    list-style: none;
+  }
+
+  .price-features li {
+    padding: 12px 0;
+    color: var(--gray-light);
+    font-size: 14px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .price-features li::before {
+    content: '';
+    width: 16px;
+    height: 16px;
+    background: var(--gradient);
+    border-radius: 50%;
+    flex-shrink: 0;
+    position: relative;
+  }
+
+  .price-features li:last-child { border-bottom: none; }
+
+  /* ============ INCLUSIEF ============ */
+  .included-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+  }
+
+  .included-item {
+    padding: 36px 24px;
+    text-align: center;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: var(--bg-soft);
+    transition: all 0.4s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .included-item::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--gradient);
+    opacity: 0;
+    transition: opacity 0.4s;
+    z-index: 0;
+  }
+
+  .included-item:hover::before { opacity: 0.08; }
+  .included-item > * { position: relative; z-index: 1; }
+
+  .included-item:hover {
+    border-color: var(--border-bright);
+    transform: translateY(-4px);
+  }
+
+  .included-icon {
+    width: 56px;
+    height: 56px;
+    background: var(--gradient-soft);
+    border: 1px solid var(--border-bright);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 24px;
+  }
+
+  .included-title {
+    font-family: 'Fraunces', serif;
+    font-size: 19px;
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+
+  .included-desc {
+    font-size: 13px;
+    color: var(--gray);
+  }
+
+  /* ============ FAQ ============ */
+  .faq-list {
+    max-width: 800px;
+  }
+
+  .faq-item {
+    border-bottom: 1px solid var(--border);
+    padding: 28px 0;
+    cursor: pointer;
+    transition: padding 0.3s;
+  }
+
+  .faq-item:hover { padding-left: 8px; }
+
+  .faq-question {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'Fraunces', serif;
+    font-size: 21px;
+    color: var(--white);
+    transition: color 0.3s;
+    gap: 24px;
+  }
+
+  .faq-item:hover .faq-question { color: var(--orange-bright); }
+
+  .faq-toggle {
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--border-bright);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: var(--orange-bright);
+    transition: all 0.3s;
+    flex-shrink: 0;
+    font-weight: 300;
+  }
+
+  .faq-item.open .faq-toggle {
+    transform: rotate(45deg);
+    background: var(--gradient);
+    color: var(--white);
+    border-color: transparent;
+  }
+
+  .faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, padding 0.4s ease;
+    color: var(--gray-light);
+    font-size: 15px;
+  }
+
+  .faq-item.open .faq-answer {
+    max-height: 200px;
+    padding-top: 16px;
+  }
+
+  /* ============ TESTIMONIAL ============ */
+  .testimonial-section {
+    text-align: center;
+  }
+
+  .testimonial-quote-wrap {
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .testimonial-quote-wrap::before {
+    content: '"';
+    font-family: 'Fraunces', serif;
+    font-size: 240px;
+    line-height: 1;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    position: absolute;
+    top: -80px;
+    left: -40px;
+    opacity: 0.2;
+    pointer-events: none;
+    font-weight: 700;
+  }
+
+  .testimonial-quote {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: clamp(26px, 3.2vw, 40px);
+    font-weight: 300;
+    line-height: 1.3;
+    margin-bottom: 40px;
+    color: var(--white);
+    position: relative;
+    z-index: 1;
+  }
+
+  .testimonial-author {
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  /* ============ CONTACT FORM ============ */
+  .contact-section {
+    text-align: center;
+    position: relative;
+  }
+
+  .contact-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    height: 600px;
+    background: var(--gradient-glow);
+    filter: blur(120px);
+    opacity: 0.3;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .contact-form {
+    max-width: 640px;
+    margin: 64px auto 0;
+    background: var(--bg-soft);
+    padding: 56px 48px;
+    border: 1px solid var(--border-bright);
+    border-radius: 24px;
+    text-align: left;
+    position: relative;
+    z-index: 1;
+    backdrop-filter: blur(20px);
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  @media (max-width: 600px) {
+    .form-row { grid-template-columns: 1fr; }
+    .contact-form { padding: 40px 24px; }
+  }
+
+  .form-group { margin-bottom: 16px; }
+
+  .form-group label {
+    display: block;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--orange-bright);
+    margin-bottom: 8px;
+    font-weight: 700;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%;
+    padding: 16px 18px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--white);
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    transition: all 0.3s;
+  }
+
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus {
+    outline: none;
+    border-color: var(--orange);
+    background: var(--bg-card);
+    box-shadow: 0 0 0 4px var(--gradient-soft);
+  }
+
+  .form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+  }
+
+  .form-submit {
+    width: 100%;
+    margin-top: 12px;
+    justify-content: center;
+    padding: 20px 32px;
+    font-size: 14px;
+  }
+
+  .form-message {
+    margin-top: 20px;
+    padding: 16px;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 14px;
+    display: none;
+  }
+
+  .form-message.success {
+    background: rgba(34, 197, 94, 0.1);
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    color: #4ade80;
+    display: block;
+  }
+
+  .form-message.error {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #f87171;
+    display: block;
+  }
+
+  /* ============ FOOTER ============ */
+  footer {
+    padding: 60px 0 40px;
+    border-top: 1px solid var(--border);
+    text-align: center;
+    position: relative;
+    z-index: 2;
+  }
+
+  .footer-logo {
+    height: 50px;
+    margin: 0 auto 20px;
+    display: block;
+  }
+
+  .footer-text {
+    color: var(--gray);
+    font-size: 13px;
+  }
+
+  /* Reveal on scroll */
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.9s cubic-bezier(0.4, 0, 0.2, 1), transform 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .reveal-stagger > * {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.9s cubic-bezier(0.4, 0, 0.2, 1), transform 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .reveal-stagger.visible > * { opacity: 1; transform: translateY(0); }
+  .reveal-stagger.visible > *:nth-child(1) { transition-delay: 0s; }
+  .reveal-stagger.visible > *:nth-child(2) { transition-delay: 0.1s; }
+  .reveal-stagger.visible > *:nth-child(3) { transition-delay: 0.2s; }
+  .reveal-stagger.visible > *:nth-child(4) { transition-delay: 0.3s; }
+  .reveal-stagger.visible > *:nth-child(5) { transition-delay: 0.4s; }
+  .reveal-stagger.visible > *:nth-child(6) { transition-delay: 0.5s; }
+  .reveal-stagger.visible > *:nth-child(7) { transition-delay: 0.6s; }
+  .reveal-stagger.visible > *:nth-child(8) { transition-delay: 0.7s; }
+
+  @media (max-width: 768px) {
+    .hero-media { width: 100%; opacity: 0.25; }
+    .spin-ring { right: -300px; }
+    section { padding: 100px 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Animated gradient orbs background -->
+<div class="orbs">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+</div>
+
+<!-- NAVIGATION -->
+<nav id="nav">
+  <img src="assets/logo-transparent.png" alt="360videosessie" class="nav-logo">
+  <a href="#contact" class="nav-cta"><span>Vraag prijs op</span></a>
+</nav>
+
+<!-- Persoonlijke begroeting -->
+<div class="personal-bar" id="personalBar">
+  <span id="personalText"></span>
+</div>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="spin-ring"><div class="ring-dot"></div></div>
+
+  <!-- MEDIA PLACEHOLDER 1 -->
+  <div class="hero-media">
+    <div class="media-placeholder">
+      <div class="label">VIDEO — Hero Achtergrond</div>
+      <p class="instruction">
+        Een sfeervolle compilatie video (10-15 sec, geluidloos, autoplay loop) van de booth in actie tijdens een drukke avond. Donker/cinematisch — dansvloer met lichten, gasten die lachen op de booth, slow-motion 360 shots. Idealiter eindigend op een freeze-frame van een spectaculaire spin.
+      </p>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="hero-content">
+      <div class="badge">360 Photobooth · Breda · Sinds 2024</div>
+      <h1 class="hero-title">
+        <span>Maak van je event</span>
+        <span><em>hét moment</em></span>
+        <span>dat iedereen</span>
+        <span>blijft delen.</span>
+      </h1>
+      <p class="hero-subtitle" id="heroSubtitle">
+        Wij brengen onze 360° videobooth naar jouw locatie. Je gasten krijgen binnen 10 seconden een slow-motion video die ze direct kunnen delen op social media. Inclusief host, opbouw en alle benodigdheden.
+      </p>
+      <div class="hero-cta">
+        <a href="#contact" class="btn btn-primary">
+          <span>Vraag prijs op</span>
+          <span class="btn-arrow">→</span>
+        </a>
+        <a href="#showcase" class="btn btn-secondary">
+          Bekijk werk
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TICKER ============ -->
+<div class="ticker-section">
+  <div class="ticker">
+    <div class="ticker-item">Bruiloften</div>
+    <div class="ticker-item">Bedrijfsfeesten</div>
+    <div class="ticker-item">Verjaardagen</div>
+    <div class="ticker-item">Schoolevents</div>
+    <div class="ticker-item">Promoties</div>
+    <div class="ticker-item">Beurzen</div>
+    <div class="ticker-item">Privé feesten</div>
+    <div class="ticker-item">Bruiloften</div>
+    <div class="ticker-item">Bedrijfsfeesten</div>
+    <div class="ticker-item">Verjaardagen</div>
+    <div class="ticker-item">Schoolevents</div>
+    <div class="ticker-item">Promoties</div>
+    <div class="ticker-item">Beurzen</div>
+    <div class="ticker-item">Privé feesten</div>
+  </div>
+</div>
+
+<!-- ============ HOW IT WORKS ============ -->
+<section>
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">— Hoe het werkt</div>
+      <h2 class="section-title">Eenvoudig.<br><em>Onvergetelijk.</em></h2>
+      <p class="section-intro">
+        Van boeking tot herinneringen — wij regelen het hele proces. Jij hoeft alleen maar te genieten van het event.
+      </p>
+    </div>
+
+    <div class="how-grid reveal-stagger">
+      <div class="how-card">
+        <div class="how-number">01</div>
+        <h3 class="how-title">Wij installeren</h3>
+        <p class="how-desc">Onze hosts komen ruim van tevoren om de booth op te bouwen. Alleen een stopcontact en 2,5×2,5m ruimte nodig.</p>
+      </div>
+      <div class="how-card">
+        <div class="how-number">02</div>
+        <h3 class="how-title">Gasten beleven</h3>
+        <p class="how-desc">Onze hosts begeleiden je gasten op de booth. Props, muziek naar keuze, eigen filter — alles is verzorgd.</p>
+      </div>
+      <div class="how-card">
+        <div class="how-number">03</div>
+        <h3 class="how-title">Direct delen</h3>
+        <p class="how-desc">Binnen 10 seconden krijgen gasten hun video via QR-code of AirDrop. Klaar om direct te posten.</p>
+      </div>
+      <div class="how-card">
+        <div class="how-number">04</div>
+        <h3 class="how-title">Alles opgeslagen</h3>
+        <p class="how-desc">1-3 dagen na het event ontvang je alle video's verzameld in één map — voor altijd te bewaren.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STATS ============ -->
+<section class="stats-section">
+  <div class="container">
+    <div class="stats-grid reveal-stagger">
+      <div>
+        <div class="stat-number" data-target="10">10s</div>
+        <div class="stat-label">Tot levering</div>
+      </div>
+      <div>
+        <div class="stat-number" data-target="100">100%</div>
+        <div class="stat-label">Tevreden klanten</div>
+      </div>
+      <div>
+        <div class="stat-number" data-target="500">500+</div>
+        <div class="stat-label">Video's gemaakt</div>
+      </div>
+      <div>
+        <div class="stat-number" data-target="0">0</div>
+        <div class="stat-label">Verborgen kosten</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SHOWCASE ============ -->
+<section id="showcase">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">— Eerdere events</div>
+      <h2 class="section-title">Gezien in <em>actie.</em></h2>
+      <p class="section-intro">
+        Een greep uit eerdere boekingen — bruiloften, bedrijfsfeesten, schoolevenementen en privé feesten.
+      </p>
+    </div>
+
+    <div class="showcase-grid">
+      <!-- MEDIA PLACEHOLDER 2 -->
+      <div class="showcase-item large">
+        <div class="media-placeholder">
+          <div class="label">VIDEO — Featured Showpiece</div>
+          <p class="instruction">
+            Je beste compilatie video uit alle events. 20-30 seconden, met muziek. Begin met wide shot van de booth, dan close-ups van reacties van gasten, eindigend met een groep die juicht. Dit is je showpiece — kies de meest dynamische beelden die je hebt.
+          </p>
+        </div>
+      </div>
+      <!-- MEDIA PLACEHOLDER 3 -->
+      <div class="showcase-item medium">
+        <div class="media-placeholder">
+          <div class="label">FOTO — Booth Setup</div>
+          <p class="instruction">
+            Professionele foto van de booth opgesteld in een mooie ruimte. Sfeervolle verlichting, lege booth, ruime opstelling. Liefst vanaf ooghoogte met diepte.
+          </p>
+        </div>
+      </div>
+      <!-- MEDIA PLACEHOLDER 4 -->
+      <div class="showcase-item medium">
+        <div class="media-placeholder">
+          <div class="label">VIDEO — POV vanuit booth</div>
+          <p class="instruction">
+            Korte 360 spin video (5-10 sec) gefilmd VANUIT de booth zelf — POV-perspectief. Laat zien wat de camera ziet tijdens de spin. Hoge energie, met muziek.
+          </p>
+        </div>
+      </div>
+      <!-- MEDIA PLACEHOLDER 5 -->
+      <div class="showcase-item tall">
+        <div class="media-placeholder">
+          <div class="label">FOTO — Bruiloft moment</div>
+          <p class="instruction">
+            Verticale foto van een bruiloftsmoment op de booth. Bruidspaar samen of vrienden met props. Elegant, warme verlichting. Bewijst dat jullie geschikt zijn voor bruiloften.
+          </p>
+        </div>
+      </div>
+      <!-- MEDIA PLACEHOLDER 6 -->
+      <div class="showcase-item wide">
+        <div class="media-placeholder">
+          <div class="label">VIDEO — Reactie compilatie</div>
+          <p class="instruction">
+            Compilatie van 3-4 close-up reactieshots: gasten die hun telefoon checken NA hun video, lachen, "wow"-gezichten. Dit verkoopt de ervaring. Korte clips achter elkaar, geen muziek nodig.
+          </p>
+        </div>
+      </div>
+      <!-- MEDIA PLACEHOLDER 7 -->
+      <div class="showcase-item medium">
+        <div class="media-placeholder">
+          <div class="label">FOTO — Bedrijfsevent</div>
+          <p class="instruction">
+            Foto van de booth op een zakelijke setting — bedrijfsfeest, beurs, of conferentie. Professionele uitstraling, mensen in nette kleding. Bewijst dat je B2B-fähig bent.
+          </p>
+        </div>
+      </div>
+      <!-- MEDIA PLACEHOLDER 8 -->
+      <div class="showcase-item medium">
+        <div class="media-placeholder">
+          <div class="label">FOTO — Props in actie</div>
+          <p class="instruction">
+            Dynamische foto van gasten met props (moneygun, confetti, maskers) terwijl ze op de booth staan. Veel beweging, plezier, kleur. Energie.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRIJZEN ============ -->
+<section id="pakketten">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">— Pakketten</div>
+      <h2 class="section-title">Eerlijke prijzen.<br><em>Geen verrassingen.</em></h2>
+      <p class="section-intro">
+        Alle pakketten zijn inclusief opbouw, host, reiskosten binnen 30km van Breda, persoonlijke filter en directe deelfunctie via QR/AirDrop.
+      </p>
+    </div>
+
+    <div class="pricing-grid reveal-stagger">
+      <div class="price-card">
+        <div class="price-duration">2 uur</div>
+        <div class="price-amount"><span class="currency">€</span>275</div>
+        <ul class="price-features">
+          <li>Volledige opbouw & afbouw</li>
+          <li>1 host on-site</li>
+          <li>Onbeperkt video's</li>
+          <li>Persoonlijke filter</li>
+          <li>Alle video's nagezonden</li>
+        </ul>
+      </div>
+      <div class="price-card featured">
+        <div class="featured-badge">Meest gekozen</div>
+        <div class="price-duration">3 uur</div>
+        <div class="price-amount"><span class="currency">€</span>325</div>
+        <ul class="price-features">
+          <li>Volledige opbouw & afbouw</li>
+          <li>1-2 hosts on-site</li>
+          <li>Onbeperkt video's</li>
+          <li>Persoonlijke filter</li>
+          <li>Muziek naar keuze</li>
+          <li>Alle video's nagezonden</li>
+        </ul>
+      </div>
+      <div class="price-card">
+        <div class="price-duration">4 uur</div>
+        <div class="price-amount"><span class="currency">€</span>400</div>
+        <ul class="price-features">
+          <li>Volledige opbouw & afbouw</li>
+          <li>2 hosts on-site</li>
+          <li>Onbeperkt video's</li>
+          <li>Persoonlijke filter</li>
+          <li>Muziek naar keuze</li>
+          <li>Props inbegrepen</li>
+          <li>Alle video's nagezonden</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ WAT IS INCLUSIEF ============ -->
+<section>
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">— Standaard inbegrepen</div>
+      <h2 class="section-title">Alles geregeld.<br><em>Geen extra kosten.</em></h2>
+      <p class="section-intro">
+        Bij andere aanbieders betaal je vaak los voor host, reizen en filters. Bij ons zit het er gewoon bij.
+      </p>
+    </div>
+
+    <div class="included-grid reveal-stagger">
+      <div class="included-item">
+        <div class="included-icon">🚗</div>
+        <div class="included-title">Reiskosten</div>
+        <div class="included-desc">Binnen 30km van Breda altijd inbegrepen</div>
+      </div>
+      <div class="included-item">
+        <div class="included-icon">👥</div>
+        <div class="included-title">1-2 Hosts</div>
+        <div class="included-desc">Begeleiden je gasten de hele avond</div>
+      </div>
+      <div class="included-item">
+        <div class="included-icon">🎨</div>
+        <div class="included-title">Eigen filter</div>
+        <div class="included-desc">Persoonlijke branding op elke video</div>
+      </div>
+      <div class="included-item">
+        <div class="included-icon">🎵</div>
+        <div class="included-title">Muziek</div>
+        <div class="included-desc">Jullie eigen nummers op de video's</div>
+      </div>
+      <div class="included-item">
+        <div class="included-icon">📲</div>
+        <div class="included-title">Direct delen</div>
+        <div class="included-desc">QR-code of AirDrop binnen 10 sec</div>
+      </div>
+      <div class="included-item">
+        <div class="included-icon">💾</div>
+        <div class="included-title">Alle video's</div>
+        <div class="included-desc">Verzonden binnen 1-3 dagen</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TESTIMONIAL ============ -->
+<section class="testimonial-section">
+  <div class="container">
+    <div class="reveal">
+      <div class="testimonial-quote-wrap">
+        <p class="testimonial-quote" id="testimonialText">
+          De 360 booth was hét hoogtepunt van onze avond. Iedereen was er druk mee bezig en de video's gingen meteen rond op Instagram. Top geregeld door het team.
+        </p>
+        <div class="testimonial-author">— Eerdere klant, Breda</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section>
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">— Veelgestelde vragen</div>
+      <h2 class="section-title">Alles wat je<br><em>wilt weten.</em></h2>
+    </div>
+
+    <div class="faq-list reveal">
+      <div class="faq-item">
+        <div class="faq-question">
+          Wat heb ik nodig op locatie?
+          <span class="faq-toggle">+</span>
+        </div>
+        <div class="faq-answer">
+          Eén stopcontact en minimaal 2,5×2,5 meter vrije ruimte. Wij regelen al het andere — verlichting, opbouw, afbouw, alles.
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">
+          Hoe snel krijgen gasten hun video?
+          <span class="faq-toggle">+</span>
+        </div>
+        <div class="faq-answer">
+          Binnen 10 seconden na de opname. Gasten scannen een QR-code of gebruiken AirDrop, en de video staat op hun telefoon. Klaar om te delen.
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">
+          Komen jullie naar onze locatie buiten Breda?
+          <span class="faq-toggle">+</span>
+        </div>
+        <div class="faq-answer">
+          Ja, we komen door heel Nederland. Binnen 30km van Breda zijn reiskosten inbegrepen. Daarbuiten rekenen we een kleine vergoeding — vraag een offerte aan voor exacte prijs.
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">
+          Kunnen we onze eigen branding toevoegen?
+          <span class="faq-toggle">+</span>
+        </div>
+        <div class="faq-answer">
+          Absoluut. Wij maken gratis een persoonlijke filter met je logo, naam van het event, of een ander ontwerp. Perfect voor bedrijfsevents of bruiloften.
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">
+          Hoeveel gasten kunnen tegelijk op de booth?
+          <span class="faq-toggle">+</span>
+        </div>
+        <div class="faq-answer">
+          Tot 4-6 personen tegelijk afhankelijk van de pose. Onze hosts begeleiden je gasten zodat er continu video's worden gemaakt — geen wachtrijen.
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">
+          Hoe boeken we?
+          <span class="faq-toggle">+</span>
+        </div>
+        <div class="faq-answer">
+          Vul hieronder het formulier in met je datum en details, of stuur ons een DM op Instagram. Binnen 24 uur ontvang je een persoonlijk voorstel.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONTACT FORMULIER ============ -->
+<section class="contact-section" id="contact">
+  <div class="contact-glow"></div>
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">— Vraag aan</div>
+      <h2 class="section-title" id="contactTitle">Klaar voor<br><em>jouw event?</em></h2>
+      <p class="section-intro" style="margin-left: auto; margin-right: auto;">
+        Laat je gegevens achter — binnen 24 uur ontvang je een persoonlijk voorstel met exacte prijs voor jouw event.
+      </p>
+    </div>
+
+    <form class="contact-form reveal" id="bookingForm">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="name">Naam *</label>
+          <input type="text" id="name" name="name" required>
+        </div>
+        <div class="form-group">
+          <label for="email">E-mail *</label>
+          <input type="email" id="email" name="email" required>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="phone">Telefoon</label>
+          <input type="tel" id="phone" name="phone">
+        </div>
+        <div class="form-group">
+          <label for="eventType">Type event *</label>
+          <select id="eventType" name="eventType" required>
+            <option value="">Selecteer...</option>
+            <option value="Bruiloft">Bruiloft</option>
+            <option value="Verjaardag">Verjaardag</option>
+            <option value="Bedrijfsfeest">Bedrijfsfeest</option>
+            <option value="Schoolevent">Schoolevent</option>
+            <option value="Beurs/Promotie">Beurs / Promotie</option>
+            <option value="Anders">Anders</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="date">Datum event *</label>
+          <input type="date" id="date" name="date" required>
+        </div>
+        <div class="form-group">
+          <label for="guests">Aantal gasten</label>
+          <input type="number" id="guests" name="guests" placeholder="Bijv. 80">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="location">Locatie (stad/postcode) *</label>
+        <input type="text" id="location" name="location" placeholder="Bijv. Breda" required>
+      </div>
+
+      <div class="form-group">
+        <label for="message">Extra info / vragen</label>
+        <textarea id="message" name="message" placeholder="Bijv. tijden, wensen, etc."></textarea>
+      </div>
+
+      <button type="submit" class="btn btn-primary form-submit">
+        <span>Verstuur aanvraag</span>
+        <span class="btn-arrow">→</span>
+      </button>
+
+      <div class="form-message" id="formMessage"></div>
+    </form>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="container">
+    <img src="assets/logo-transparent.png" alt="360videosessie" class="footer-logo">
+    <p class="footer-text">Breda · Nederland · @360videosessie</p>
+  </div>
+</footer>
+
+<script>
+  // ============ NAV SCROLL EFFECT ============
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 50) {
+      nav.classList.add('scrolled');
+    } else {
+      nav.classList.remove('scrolled');
+    }
+  });
+
+  // ============ PERSONALISATIE VIA URL ============
+  // Voorbeelden:
+  // ?type=bruiloft&naam=Sarah
+  // ?type=school&naam=ROC-Tilburg
+  // ?type=bedrijf&naam=ING
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const type = urlParams.get('type');
+  const naam = urlParams.get('naam');
+
+  const personalBar = document.getElementById('personalBar');
+  const personalText = document.getElementById('personalText');
+  const heroSubtitle = document.getElementById('heroSubtitle');
+  const contactTitle = document.getElementById('contactTitle');
+  const testimonialText = document.getElementById('testimonialText');
+
+  if (naam) {
+    personalBar.classList.add('active');
+    personalText.textContent = `★ Speciaal voorstel voor ${naam.replace(/-/g, ' ')} ★`;
+    document.body.style.paddingTop = '40px';
+  }
+
+  const personalisation = {
+    'bruiloft': {
+      hero: 'Maak van jullie bruiloft een dag die de gasten nooit vergeten. Onze 360° booth zorgt voor unieke video\'s die jullie en de gasten direct kunnen delen. Inclusief host, opbouw en eigen filter.',
+      contactTitle: 'Klaar voor<br><em>jullie grote dag?</em>',
+      testimonial: 'De 360 booth was hét hoogtepunt van onze bruiloft. Onze gasten waren er de hele avond mee bezig en de video\'s zijn een prachtige herinnering.'
+    },
+    'school': {
+      hero: 'Geef jullie schoolevent een onvergetelijke twist. Onze 360° booth is dé attractie op galas, eindfeesten en open dagen. Leerlingen delen massaal — perfect voor social media zichtbaarheid.',
+      contactTitle: 'Klaar voor<br><em>jullie schoolevent?</em>',
+      testimonial: 'De leerlingen waren in extase. Een rij voor de booth de hele avond, en alle video\'s gingen meteen viraal op TikTok en Instagram. Echt een hit.'
+    },
+    'bedrijf': {
+      hero: 'Onderscheid jullie bedrijfsevent met een ervaring die gasten écht delen. Onze 360° booth zorgt voor branded content via je gasten\'s eigen social media — organische bereik dat je niet kunt kopen.',
+      contactTitle: 'Klaar voor<br><em>jullie bedrijfsevent?</em>',
+      testimonial: 'Een geweldige aanvulling op ons bedrijfsfeest. Professioneel team, vlekkeloze service en de gebrande video\'s zorgden voor enorme social media reach.'
+    },
+    'verjaardag': {
+      hero: 'Maak van je verjaardag het feest waar iedereen het over heeft. Onze 360° booth zorgt voor video\'s die je gasten meteen delen — herinneringen die online blijven leven.',
+      contactTitle: 'Klaar voor<br><em>jouw feest?</em>',
+      testimonial: 'Beste verjaardag ooit. De booth was non-stop bezet en mijn vrienden posten nu nog steeds de video\'s. Top team!'
+    }
+  };
+
+  if (type && personalisation[type]) {
+    heroSubtitle.textContent = personalisation[type].hero;
+    contactTitle.innerHTML = personalisation[type].contactTitle;
+    testimonialText.textContent = personalisation[type].testimonial;
+  }
+
+  // ============ FAQ ACCORDION ============
+  document.querySelectorAll('.faq-item').forEach(item => {
+    item.addEventListener('click', () => {
+      item.classList.toggle('open');
+    });
+  });
+
+  // ============ SCROLL REVEAL ============
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.reveal, .reveal-stagger').forEach(el => observer.observe(el));
+
+  // ============ FORMULIER NAAR GOOGLE SHEETS ============
+  // Vervang met je eigen Google Apps Script URL
+  const GOOGLE_SCRIPT_URL = 'PLAK_HIER_JE_GOOGLE_APPS_SCRIPT_URL';
+
+  document.getElementById('bookingForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const message = document.getElementById('formMessage');
+    const submitBtn = form.querySelector('button[type="submit"]');
+
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span>Bezig met versturen...</span>';
+
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData);
+    data.timestamp = new Date().toISOString();
+    data.source = type || 'direct';
+    data.referredName = naam || '';
+
+    try {
+      await fetch(GOOGLE_SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+
+      message.className = 'form-message success';
+      message.textContent = '✓ Bedankt! Binnen 24 uur ontvang je een persoonlijk voorstel.';
+      form.reset();
+    } catch (error) {
+      message.className = 'form-message error';
+      message.textContent = 'Er ging iets mis. Stuur ons een DM op Instagram @360videosessie';
+    }
+
+    submitBtn.disabled = false;
+    submitBtn.innerHTML = '<span>Verstuur aanvraag</span> <span class="btn-arrow">→</span>';
+  });
+</script>
+
+</body>
+</html>
